@@ -1,98 +1,55 @@
 package com.example.myapplication;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.graphics.Color;
+import android.content.Intent;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CalendarView;
-import android.widget.Chronometer;
-import android.widget.RadioButton;
-import android.widget.TextView;
-import android.widget.TimePicker;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
-    Chronometer chronometer;
-    Button btnStart, btnEnd;
-    RadioButton rdoCal, rdoTime;
-    CalendarView calendarView;
-    TimePicker timePicker;
-    TextView textYear, textMonth, textDay, textHour, textMin;
-    int selectYear, selectMonth, selectDay;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setTitle("직접 풀어보기 10-2");
 
-        setTitle("시간 예약");
+        final int voteCount[] = new int[9];
+        for(int i = 0; i < 9; i++)
+            voteCount[i] = 0;
 
-        btnStart = (Button) findViewById(R.id.btnStart);
-        btnEnd = (Button) findViewById(R.id.btnEnd);
-        chronometer = (Chronometer) findViewById(R.id.chronometer1);
-        rdoCal = (RadioButton) findViewById(R.id.rdoCal);
-        rdoTime = (RadioButton) findViewById(R.id.rdoTime);
-        calendarView = (CalendarView) findViewById(R.id.calendarView1);
-        timePicker = (TimePicker) findViewById(R.id.timePicker1);
-        textYear = (TextView) findViewById(R.id.textYear);
-        textMonth = (TextView) findViewById(R.id.textMonth);
-        textDay = (TextView) findViewById(R.id.textDay);
-        textHour = (TextView) findViewById(R.id.textHour);
-        textMin = (TextView) findViewById(R.id.textMin);
+        ImageView image[] = new ImageView[9];
+        Integer imageId[] = { R.id.img1, R.id.img2, R.id.img3, R.id.img4, R.id.img5, R.id.img6,
+                    R.id.img7, R.id.img8, R.id.img9 };
 
-        timePicker.setVisibility(View.INVISIBLE);
-        calendarView.setVisibility(View.INVISIBLE);
+        final String imgName[] = {"독서하는 소녀", "꽃장식 모자 소녀", "부채를 든 소녀", "이레느깡 단 베르양",
+                    "잠자는 소녀", "테라스의 두 자매", "피아노 레슨", "피아노 앞의 소녀들", "해변에서"};
 
-        rdoCal.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                timePicker.setVisibility(View.INVISIBLE);
-                calendarView.setVisibility(View.VISIBLE);
-            }
-        });
+        for (int i = 0; i < imageId.length; i++){
+            final int index;
+            index = i;
+            image[index] = (ImageView) findViewById(imageId[index]);
+            image[index].setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    voteCount[index]++;
+                    Toast.makeText(getApplicationContext(), imgName[index] + ": 총 " + voteCount[index] + " 표", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
 
-        rdoTime.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                timePicker.setVisibility(View.VISIBLE);
-                calendarView.setVisibility(View.INVISIBLE);
-            }
-        });
-
-        btnStart.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                chronometer.setBase(SystemClock.elapsedRealtime());
-                chronometer.start();
-                chronometer.setTextColor(Color.RED);
-            }
-        });
-
+        Button btnEnd = (Button) findViewById(R.id.btnEnd);
         btnEnd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                chronometer.stop();
-                chronometer.setTextColor(Color.BLUE);
-
-                textYear.setText(Integer.toString(selectYear));
-                textMonth.setText(Integer.toString(selectMonth));
-                textDay.setText(Integer.toString(selectDay));
-
-                textHour.setText(Integer.toString(timePicker.getCurrentHour()));
-                textMin.setText(Integer.toString(timePicker.getCurrentMinute()));
-            }
-        });
-
-        calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
-            @Override
-            public void onSelectedDayChange(@NonNull CalendarView calendarView, int year, int month, int day) {
-                selectYear = year;
-                selectMonth = month;
-                selectDay = day;
+                Intent intent = new Intent(getApplicationContext(), Result.class);
+                intent.putExtra("VoteCount", voteCount);
+                intent.putExtra("ImageName", imgName);
+                startActivity(intent);
             }
         });
     }
-
 }

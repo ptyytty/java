@@ -25,6 +25,7 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
+        <activity   android:name=".Result" android:label="투표 결과" />
     </application>
 
 </manifest>
